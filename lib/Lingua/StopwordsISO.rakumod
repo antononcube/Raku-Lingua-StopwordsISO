@@ -22,11 +22,11 @@ multi stopwords-iso( @langs --> Hash) {
 multi stopwords-iso( Str $lang --> SetHash) {
     given $lang.lc {
         when %stopwords-iso{$_}:exists {
-            return %stopwords-iso{$_}.SetHash;
+            return %stopwords-iso{$_}.clone.SetHash;
         }
 
         when (%language-to-iso-abbr{$_}:exists) && (%stopwords-iso{%language-to-iso-abbr{$_}:exists}) {
-            return %stopwords-iso{%language-to-iso-abbr{$_}}.SetHash;
+            return %stopwords-iso{%language-to-iso-abbr{$_}}.clone.SetHash;
         }
 
         default {
@@ -34,6 +34,23 @@ multi stopwords-iso( Str $lang --> SetHash) {
             return Nil;
         }
     }
+}
+
+
+#----------------------------------------------------------
+#| Delete stop words for given text(s) and a language specification.
+#| C<$textSpec> can be a string or a list of strings.
+#| C<$langSpec> is a language spec.
+proto delete-stopwords( $textSpec, $langSpec ) is export {*}
+
+multi delete-stopwords( @texts, Str $lang --> Positional) {
+    return @texts.map({ delete-stopwords($_, $lang) });
+}
+
+multi delete-stopwords( Str $text, Str $lang = 'English' --> Str) {
+    my %sws = stopwords-iso($lang);
+    my $text2 = $text.subst( / <wb> (\w+) <wb> <?{ $0.Str.lc (elem) %sws }> /, '' ):g;
+    return $text2;
 }
 
 
