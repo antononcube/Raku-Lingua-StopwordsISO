@@ -11,7 +11,7 @@ my %language-to-iso-abbr;
 #| C<$langSpec> can be a string or a list of strings.
 proto stopwords-iso( $langSpec ) is export {*}
 
-multi stopwords-iso( 'all' --> Hash) {
+multi stopwords-iso( Str $lang where $_.lc eq 'all' --> Hash) {
     return %stopwords-iso>>.SetHash;
 }
 
@@ -22,7 +22,7 @@ multi stopwords-iso( @langs --> Hash) {
 multi stopwords-iso( Str $lang --> SetHash) {
     given $lang.lc {
         when %stopwords-iso{$_}:exists {
-            return %stopwords-iso{$lang}.SetHash;
+            return %stopwords-iso{$_}.SetHash;R
         }
 
         when (%language-to-iso-abbr{$_}:exists) && (%stopwords-iso{%language-to-iso-abbr{$_}:exists}) {
