@@ -1,0 +1,35 @@
+use v6.d;
+use Test;
+
+use lib '.';
+use lib './lib';
+
+use Lingua::StopwordsISO;
+
+plan 6;
+
+# 1
+isa-ok stopwords-iso('BG'), SetHash,
+        'For BG.';
+
+# 2
+isa-ok stopwords-iso('Bulgarian'), SetHash,
+        'For Bulgarian.';
+
+# 3
+is ([&] <a after before the>.map({ $_ ∈ stopwords-iso('English') })), True,
+        'Known English stop words are in.';
+
+# 4
+isa-ok stopwords-iso(<Russian Czech ru bg pl>), Hash,
+        'Language spec that is a list of strings.';
+
+# 5
+isa-ok stopwords-iso('all'), Hash,
+        'Get all stopwords';
+
+# 6
+is stopwords-iso('all').elems, 58,
+        'Expected number of languages';
+
+done-testing;

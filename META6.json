@@ -1,0 +1,31 @@
+{
+  "name": "Lingua::StopwordsISO",
+  "description": "Package for stop words in different languages.",
+  "version": "0.1.0",
+  "perl": "6.d",
+  "authors": [
+    "Anton Antonov"
+  ],
+  "auth": "github:antononcube",
+  "depends": [
+    "JSON::Fast"
+  ],
+  "build-depends": [],
+  "test-depends": [],
+  "provides": {
+    "Lingua::StopwordsISO": "lib/Lingua/StopwordsISO.rakumod"
+  },
+  "resources": [
+    "stopwords-iso.json",
+    "language-to-iso-abbr.json"
+  ],
+  "license": "Artistic-2.0",
+  "tags": [
+    "stopwords",
+    "stop words",
+    "NLP",
+    "multi-language"
+  ],
+  "api": "1",
+  "source-url": "https://github.com/antononcube/Raku-Lingua-StopwordsISO.git"
+}
