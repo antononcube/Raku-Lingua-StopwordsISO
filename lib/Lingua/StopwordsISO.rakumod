@@ -22,7 +22,7 @@ multi stopwords-iso( @langs --> Hash) {
 multi stopwords-iso( Str $lang --> SetHash) {
     given $lang.lc {
         when %stopwords-iso{$_}:exists {
-            return %stopwords-iso{$_}.SetHash;R
+            return %stopwords-iso{$_}.SetHash;
         }
 
         when (%language-to-iso-abbr{$_}:exists) && (%stopwords-iso{%language-to-iso-abbr{$_}:exists}) {
