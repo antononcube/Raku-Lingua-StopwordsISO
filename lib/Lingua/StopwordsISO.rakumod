@@ -9,17 +9,17 @@ my %language-to-iso-abbr;
 
 #| Give stop words for a language specification.
 #| C<$langSpec> can be a string or a list of strings.
-proto stopwords-iso( $langSpec ) is export {*}
+proto stopwords-iso($langSpec) is export {*}
 
-multi stopwords-iso( Str $lang where $_.lc eq 'all' --> Hash) {
+multi stopwords-iso(Str $lang where $_.lc eq 'all' --> Hash) {
     return %stopwords-iso>>.SetHash;
 }
 
-multi stopwords-iso( @langs --> Hash) {
-    return @langs.map({ $_ => stopwords-iso( $_ ) }).Hash;
+multi stopwords-iso(@langs --> Hash) {
+    return @langs.map({ $_ => stopwords-iso($_) }).Hash;
 }
 
-multi stopwords-iso( Str $lang --> SetHash) {
+multi stopwords-iso(Str $lang --> SetHash) {
     given $lang.lc {
         when %stopwords-iso{$_}:exists {
             return %stopwords-iso{$_}.clone.SetHash;
@@ -41,15 +41,17 @@ multi stopwords-iso( Str $lang --> SetHash) {
 #| Delete stop words for given text(s) and a language specification.
 #| C<$textSpec> can be a string or a list of strings.
 #| C<$langSpec> is a language spec.
-proto delete-stopwords( $textSpec, $langSpec ) is export {*}
+proto delete-stopwords($textSpec, $langSpec) is export {*}
 
-multi delete-stopwords( @texts, Str $lang --> Positional) {
+multi delete-stopwords(@texts, Str $lang --> Positional) {
     return @texts.map({ delete-stopwords($_, $lang) });
 }
 
-multi delete-stopwords( Str $text, Str $lang = 'English' --> Str) {
+multi delete-stopwords(Str $text, Str $lang = 'English' --> Str) {
     my %sws = stopwords-iso($lang);
-    my $text2 = $text.subst( / <wb> (\w+) <wb> <?{ $0.Str.lc (elem) %sws }> /, '' ):g;
+    my $text2 = $text.subst(:g, / <?after \s+> (\w+) <?before \s+> <?{ $0.Str.lc (elem) %sws }> /, '')
+            .subst(/ ^^  (\w+)  <?before \s+> <?{ $0.Str.lc (elem) %sws }> /, '')
+            .subst(/ <?after \s+> (\w+) $$ <?{ $0.Str.lc (elem) %sws }> /, '');
     return $text2;
 }
 
