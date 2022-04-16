@@ -1,0 +1,55 @@
+use v6.d;
+use Test;
+
+use lib '.';
+use lib './lib';
+
+use Lingua::StopwordsISO;
+
+plan 2;
+
+#----------------------------------------------------------
+# 1
+my $text1 = qq:to/BGEND/;
+Новите минимални размери на основните месечни работни заплати
+на педагогическите специалисти са договорени с подписания на отраслово
+ниво Анекс към Колективния трудов договор за системата на предучилищното
+и училищното образование.
+BGEND
+
+my $res1 = q:to/BGEND/;
+Новите минимални размери  основните месечни работни заплати
+ педагогическите специалисти  договорени  подписания  отраслово
+ниво Анекс  Колективния трудов договор  системата  предучилищното
+ училищното образование.
+BGEND
+
+$res1 = $res1.subst(/ \s+ /, ' '):g;
+
+is delete-stopwords($text1, 'bg').subst(/ \s+ /, ' '):g,
+        $res1,
+        'Bulgarian text';
+
+#----------------------------------------------------------
+# 2
+my $text2 = q:to/ENEND/;
+What fun is there in making plans,
+acquiring discipline in organizing thoughts,
+devoting attention to detail,
+and learning to be self-critical?
+ENEND
+
+my $res2 = qq:to/ENEND/;
+ fun  plans,
+acquiring discipline  organizing thoughts,
+devoting attention  detail,
+ learning   self-critical?
+ENEND
+
+$res2 = $res2.subst(/ \s+ /, ' '):g;
+
+is delete-stopwords($text2, 'en').subst(/ \s+ /, ' '):g,
+        $res2,
+        'English text';
+
+done-testing;
