@@ -26,9 +26,6 @@ use Lingua::StopwordsISO;
         .words
         .map({ $_.lc => $_.lc ∈ stopwords-iso('English')})
 ```
-```
-# (i => True want => True you => True to => True deal => False with => True your => True problems => True by => True becoming => True rich! => False)
-```
 
 The function `delete-stopwords` deletes the stop words in a string:
 
@@ -39,20 +36,11 @@ acquiring discipline in organizing thoughts,
 devoting attention to detail, 
 and learning to be self-critical?', 'en')
 ```
-```
-# fun     plans, 
-# acquiring discipline  organizing , 
-# devoting attention  , 
-#  learning   -critical?
-```
 
 If several languages are specified `stopwords-iso` returns a `Hash` of `SetHash` objects:
 
 ```perl6
 stopwords-iso(<Bulgarian Czech English Russian Spanish>)>>.elems
-```
-```
-# {Bulgarian => 259, Czech => 423, English => 1298, Russian => 559, Spanish => 732}
 ```
 
 With `stopwords-iso('all')` the stop words of all languages (known by the package) can be optained. 
@@ -76,12 +64,6 @@ BGEND
 
 say delete-stopwords($text1, 'bg');
 ```
-```
-# Новите минимални размери  основните месечни работни заплати
-#  педагогическите специалисти  договорени  подписания  отраслово
-# ниво Анекс  Колективния трудов договор  системата  предучилищното
-#  училищното образование.
-```
 
 This does not:
 
@@ -94,12 +76,6 @@ Hoвитe минимaлни paзмepи нa ocнoвнитe мeceчни paбoтн�
 BGEND
 
 say delete-stopwords($text2, 'bg');
-```
-```
-# Hoвитe минимaлни paзмepи нa ocнoвнитe мeceчни paбoтни зaплaти
-# нa пeдaгoгичecĸитe cпeциaлиcти ca дoгoвopeни c пoдпиcaния нa oтpacлoвo
-# нивo Aнeĸc ĸъм Koлeĸтивния тpyдoв дoгoвop зa cиcтeмaтa нa пpeдyчилищнoтo
-#  yчилищнoтo oбpaзoвaниe.
 ```
 
 ------
