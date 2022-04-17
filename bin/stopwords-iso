@@ -16,8 +16,8 @@ multi format-output(Str $format, $output) {
 }
 
 #| Removes stop words in text.
-multi sub MAIN(Str :$lang = 'English',        #= Language
-               Str :$format= 'text'           #= Output format one of 'text', 'lines', or 'raku'.
+multi sub MAIN(Str :l(:$lang) = 'English',        #= Language
+               Str :f(:$format) = 'text'           #= Output format one of 'text', 'lines', or 'raku'.
                ) {
     my $res = stopwords-iso($lang);
     return format-output($format, $res);
@@ -25,15 +25,15 @@ multi sub MAIN(Str :$lang = 'English',        #= Language
 
 #| Gives stop words for each argument.
 multi sub MAIN(*@langs,                       #= Languages to get the stop words for.
-               Str :$format= 'text'           #= Output format one of 'text', 'JSON', or 'raku'.
+               Str :f(:$format) = 'text'           #= Output format one of 'text', 'JSON', or 'raku'.
                ) {
     my %res = stopwords-iso(@langs);
     return format-output($format, %res);
 }
 
 #| Removes stop words in (pipeline) input.
-multi sub MAIN(Str :$lang = 'English',        #= Language
-               Str :$format= 'text'           #= Output format one of 'text', 'JSON', or 'raku'.
+multi sub MAIN(Str :l(:$lang) = 'English',        #= Language
+               Str :f(:$format) = 'text'           #= Output format one of 'text', 'JSON', or 'raku'.
                ) {
     my @langs = lines.join(' ').words;
     return format-output($format, stopwords-iso(@langs));
