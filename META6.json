@@ -1,6 +1,6 @@
 {
   "name": "Lingua::StopwordsISO",
-  "description": "Package for stop words of different languages and stop words deletion.",
+  "description": "Package for stop words of different languages and stop words deletion. Provides corresponding CLI scripts.",
   "version": "0.1.0",
   "perl": "6.d",
   "authors": [
