@@ -16,6 +16,8 @@ from [GDr1] as a resource file.
 
 ## Usage examples
 
+### `stopwords-iso`
+
 The function `stopwords-iso` takes as an argument a language spec (e.g. 'en' or 'English') and 
 returns a `SetHash`:
 
@@ -30,33 +32,122 @@ use Lingua::StopwordsISO;
 # (i => True want => True you => True to => True deal => False with => True your => True problems => True by => True becoming => True rich! => False)
 ```
 
-The function `delete-stopwords` deletes the stop words in a string:
-
-```perl6
-delete-stopwords(
-        'What fun is there in making plans, 
-acquiring discipline in organizing thoughts, 
-devoting attention to detail, 
-and learning to be self-critical?', 'en')
-```
-```
-# fun     plans, 
-# acquiring discipline  organizing , 
-# devoting attention  , 
-#  learning   -critical?
-```
-
 If several languages are specified `stopwords-iso` returns a `Hash` of `SetHash` objects:
 
 ```perl6
 stopwords-iso(<Bulgarian Czech English Russian Spanish>)>>.elems
 ```
 ```
-# {Bulgarian => 259, Czech => 423, English => 1298, Russian => 559, Spanish => 732}
+# {Bulgarian => 259, Czech => 423, English => 1298, Russian => 558, Spanish => 732}
 ```
 
-With `stopwords-iso('all')` the stop words of all languages (known by the package) can be optained. 
+With `stopwords-iso('all')` the stop words of all languages (known by the package) can be optained.
 
+### `delete-stopwords`
+
+The function `delete-stopwords` deletes the stop words in a string:
+
+```perl6
+delete-stopwords('English',
+        'What fun is there in making plans, 
+acquiring discipline in organizing thoughts, 
+devoting attention to detail, 
+and learning to be self-critical?')
+```
+```
+# fun     plans, 
+# acquiring discipline  organizing , 
+# devoting attention  , 
+#  learning   self-critical?
+```
+
+The first, language spec argument can be a word ('English', 'Russian', 'Spanish', etc.)
+or an abbreviation ('en', 'ru', 'es', etc.)  
+
+If only one argument is given to `delete-stopwords` then the language spec is 'English'.
+
+------
+
+## Command Line Interface (CLI)
+
+The package provides the CLI functions `stopwords-iso` and `delete-stopwords`. 
+
+### `stopwords-iso`
+
+Here is usage message of `stopwords-iso`:
+
+```shell
+> stopwords-iso --help
+Usage:
+  stopwords-iso [-f|--format=<Str>] [<langs> ...] -- Gives stop words for the specified languages in the specified format.
+  stopwords-iso [-f|--format=<Str>] -- Gives stop words for language specs in (pipeline) input.
+  
+    [<langs> ...]        Languages to get the stop words for.
+    -f|--format=<Str>    Output format one of 'text', 'json', or 'raku'. [default: 'text']
+```
+Here are example shell commands:
+
+```shell
+> stopwords-iso bg    
+# а автентичен аз ако ала бе без беше би бивш бивша бившо бил била били било благодаря близо бъдат бъде бяха 
+# в вас ваш ваша вероятно вече взема ви вие винаги внимава време все всеки всички всичко всяка във въпреки върху 
+# г ги главен главна главно глас го година години годишен д да дали два двама двамата две двете ден днес дни до 
+# добра добре добро добър докато докога дори досега доста друг друга други е евтин едва един една еднаква еднакви 
+# еднакъв едно екип ето живот за забавям зад заедно заради засега заспал затова защо защото и из или им има имат 
+# иска й каза как каква какво както какъв като кога когато което които кой който колко която къде където към лесен 
+# лесно ли лош м май малко ме между мек мен месец ми много мнозина мога могат може мокър моля момента му н на над 
+# назад най направи напред например нас не него нещо нея ни ние никой нито нищо но нов нова нови новина някои някой 
+# няколко няма обаче около освен особено от отгоре отново още пак по повече повечето под поне поради после почти 
+# прави пред преди през при пък първата първи първо пъти равен равна с са сам само се сега си син скоро след следващ 
+# сме смях според сред срещу сте съм със също т т.н. тази така такива такъв там твой те тези ти то това тогава този 
+# той толкова точно три трябва тук тъй тя тях у утре харесва хиляди ч часа че често чрез ще щом юмрук я як
+```
+
+```shell
+> stopwords-iso --format=json bg ru en | wc
+#    2123    2158   31165
+> stopwords-iso --format=json bg | wc      
+#     261     267    3707
+> stopwords-iso --format=json en | wc
+#    1300    1300   14171
+> stopwords-iso --format=json ru | wc
+#     560     586    9021
+```
+
+### `delete-stopwords`
+
+Here is the usage message of `delete-stopwords`:
+
+```shell
+> delete-stopwords --help
+Usage:
+  delete-stopwords [-l|--lang=<Str>] [-f|--format=<Str>] <text> -- Removes stop words in text.
+  delete-stopwords [-l|--lang=<Str>] [-f|--format=<Str>] [<words> ...] -- Removes stop words from a list of words.
+  delete-stopwords [-l|--lang=<Str>] [-f|--format=<Str>] -- Removes stop words in (pipeline) input.
+  
+    <text>               Text to remove stop words from.
+    -l|--lang=<Str>      Language [default: 'English']
+    -f|--format=<Str>    Output format one of 'text', 'lines', or 'raku'. [default: 'text']
+    [<words> ...]        Text to remove stop words from.
+
+```
+
+Here are example shell commands:
+
+```shell
+> delete-stopwords -l=bg Покълването на посевите се очаква с търпение, пиене и сланина.
+# Покълването  посевите  очаква  търпение, пиене  сланина.
+```
+
+```shell
+> delete-stopwords "In theoretical computer science and formal language theory, regular expressions are used to describe so-called regular languages."
+# theoretical  science  formal language theory, regular expressions     so-called regular languages.
+```
+
+```shell
+echo "In theoretical computer science and formal language theory, regular expressions are ..." | xargs -n1 | delete-stopwords
+# theoretical  science  formal language theory, regular expressions  ...
+```
 ------
 
 ## Potential problems
@@ -74,7 +165,7 @@ my $text1 = qq:to/BGEND/;
 и училищното образование.
 BGEND
 
-say delete-stopwords($text1, 'bg');
+say delete-stopwords('bg', $text1);
 ```
 ```
 # Новите минимални размери  основните месечни работни заплати
@@ -93,7 +184,7 @@ Hoвитe минимaлни paзмepи нa ocнoвнитe мeceчни paбoтн�
 и yчилищнoтo oбpaзoвaниe.
 BGEND
 
-say delete-stopwords($text2, 'bg');
+say delete-stopwords('bg', $text2);
 ```
 ```
 # Hoвитe минимaлни paзмepи нa ocнoвнитe мeceчни paбoтни зaплaти
