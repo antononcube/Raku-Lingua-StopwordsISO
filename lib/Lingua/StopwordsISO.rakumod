@@ -48,14 +48,18 @@ multi delete-stopwords(@texts --> Positional) {
 }
 
 multi delete-stopwords(Str $lang, @texts --> Positional) {
-    return @texts.map({ delete-stopwords($lang, $_) });
+    return @texts.map({ delete-stopwords($lang, $_) }).List;
 }
 
 multi delete-stopwords(Str $lang, Str $text --> Str) {
     my %sws = stopwords-iso($lang);
-    my $text2 = $text.subst(:g, / <?after [\s+ | <punct> && <:!Pd>]> (\w+) <?before [\s+ | <punct> && <:!Pd>]> <?{ $0.Str.lc (elem) %sws }> /, '')
-            .subst(/ ^^  (\w+)  <?before [\s+ | <punct> && <:!Pd>]> <?{ $0.Str.lc (elem) %sws }> /, '')
-            .subst(/ <?after [\s+ | <punct> && <:!Pd>]> (\w+) $$ <?{ $0.Str.lc (elem) %sws }> /, '');
+
+    if $text.lc (elem) %sws { return ''; }
+
+    my $text2 = $text.subst(:g, / <?after [^^ | \s+ | <punct> && <:!Pd>]> (\w+) <?before [$$ | \s+ | <punct> && <:!Pd>]> <?{ $0.Str.lc (elem) %sws }> /, '')
+            .subst(/ ^^ (\w+)  <?before [$$ | \s+ | <punct> && <:!Pd>]> <?{ $0.Str.lc (elem) %sws }> /, '')
+            .subst(/ <?after [^^ | \s+ | <punct> && <:!Pd>]> (\w+) $$ <?{ $0.Str.lc (elem) %sws }> /, '');
+
     return $text2;
 }
 
