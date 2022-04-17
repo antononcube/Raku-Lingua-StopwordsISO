@@ -26,7 +26,7 @@ BGEND
 
 $res1 = $res1.subst(/ \s+ /, ' '):g;
 
-is delete-stopwords($text1, 'bg').subst(/ \s+ /, ' '):g,
+is delete-stopwords('bg', $text1).subst(/ \s+ /, ' '):g,
         $res1,
         'Bulgarian text';
 
@@ -48,7 +48,7 @@ ENEND
 
 $res2 = $res2.subst(/ \s+ /, ' '):g;
 
-is delete-stopwords($text2, 'en').subst(/ \s+ /, ' '):g,
+is delete-stopwords($text2,).subst(/ \s+ /, ' '):g,
         $res2,
         'English text';
 
