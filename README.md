@@ -8,8 +8,8 @@ Follows
 and Raku package 
 ["Lingua::Stopwords"](https://raku.land/cpan:CHSANCH/Lingua::Stopwords), [CSp1].
 
-This package has the stop words JSON data file
-["stopwords-iso.json"](https://github.com/stopwords-iso/stopwords-iso/blob/master/stopwords-iso.json),
+This package has the JSON file
+["stopwords-iso.json"](https://github.com/stopwords-iso/stopwords-iso/blob/master/stopwords-iso.json)
 from [GDr1] as a resource file.   
 
 ------
@@ -32,7 +32,7 @@ use Lingua::StopwordsISO;
 # (i => True want => True you => True to => True deal => False with => True your => True problems => True by => True becoming => True rich! => False)
 ```
 
-If several languages are specified `stopwords-iso` returns a `Hash` of `SetHash` objects:
+If several languages are specified then the result is a `Hash` of `SetHash` objects:
 
 ```perl6
 stopwords-iso(<Bulgarian Czech English Russian Spanish>)>>.elems
@@ -74,7 +74,7 @@ The package provides the CLI functions `stopwords-iso` and `delete-stopwords`.
 
 ### `stopwords-iso`
 
-Here is usage message of `stopwords-iso`:
+Here is the usage message of `stopwords-iso`:
 
 ```shell
 > stopwords-iso --help
