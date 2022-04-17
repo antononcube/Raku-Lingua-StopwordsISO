@@ -33,17 +33,17 @@ is delete-stopwords($text1, 'bg').subst(/ \s+ /, ' '):g,
 #----------------------------------------------------------
 # 2
 my $text2 = q:to/ENEND/;
-What fun is there in making plans,
+Well, what fun is there in making self-plans for,
 acquiring discipline in organizing thoughts,
 devoting attention to detail,
-and learning to be self-critical?
+and learning to be self-critical and right?
 ENEND
 
 my $res2 = qq:to/ENEND/;
- fun  plans,
-acquiring discipline  organizing thoughts,
-devoting attention  detail,
- learning   self-critical?
+,  fun     self-plans ,
+acquiring discipline  organizing ,
+devoting attention  ,
+ learning   self-critical  ?
 ENEND
 
 $res2 = $res2.subst(/ \s+ /, ' '):g;
