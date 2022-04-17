@@ -1,0 +1,40 @@
+#!/usr/bin/env raku
+use v6.d;
+
+use Lingua::StopwordsISO;
+
+multi format-output(Str $format, @output) {
+    given $format.lc {
+        when $_ eq 'raku' && @output.elems == 1 { say @output[0].raku; }
+        when @output.elems == 1 { say @output[0]; }
+        when $_ (elem) <string text> { say @output.join(' '); }
+        when $_ (elem) <lines> { .say for @output; }
+        default { say @output.raku; }
+    }
+}
+
+#| Removes stop words in text.
+multi sub MAIN(Str $text,                         #= Text to spilt and its words stemmed.
+               Str :l(:$lang) = 'English',        #= Language
+               Str :f(:$format) = 'text'          #= Output format one of 'text', 'lines', or 'raku'.
+               ) {
+    my @res = delete-stopwords($lang, $text);
+    format-output($format, @res);
+}
+
+#| Removes stop words from a list of words.
+multi sub MAIN(*@words,                            #= Words to be stemmed.
+               Str :l(:$lang) = 'English',         #= Language
+               Str :f(:$format) = 'text'           #= Output format one of 'text', 'lines', or 'raku'.
+               ) {
+    my @res = delete-stopwords($lang, @words);
+    format-output($format, @res);
+}
+
+#| Removes stop words in (pipeline) input.
+multi sub MAIN(Str :l(:$lang) = 'English',         #= Language
+               Str :f(:$format) = 'text'           #= Output format one of 'text', 'lines', or 'raku'.
+               ) {
+    my @words = lines.join(' ').words.Array;
+    format-output($format, delete-stopwords($lang, @words));
+}
