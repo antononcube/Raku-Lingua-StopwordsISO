@@ -14,7 +14,7 @@ multi format-output(Str $format, @output) {
 }
 
 #| Removes stop words in text.
-multi sub MAIN(Str $text,                         #= Text to spilt and its words stemmed.
+multi sub MAIN(Str $text,                         #= Text to remove stop words from.
                Str :l(:$lang) = 'English',        #= Language
                Str :f(:$format) = 'text'          #= Output format one of 'text', 'lines', or 'raku'.
                ) {
@@ -23,7 +23,7 @@ multi sub MAIN(Str $text,                         #= Text to spilt and its words
 }
 
 #| Removes stop words from a list of words.
-multi sub MAIN(*@words,                            #= Words to be stemmed.
+multi sub MAIN(*@words,                            #= Text to remove stop words from.
                Str :l(:$lang) = 'English',         #= Language
                Str :f(:$format) = 'text'           #= Output format one of 'text', 'lines', or 'raku'.
                ) {
