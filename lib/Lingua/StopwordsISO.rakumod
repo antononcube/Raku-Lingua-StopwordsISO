@@ -39,22 +39,29 @@ multi stopwords-iso(Str $lang --> SetHash) {
 
 #----------------------------------------------------------
 #| Delete stop words for given text(s) and a language specification.
-#| C<$textSpec> can be a string or a list of strings.
 #| C<$langSpec> is a language spec.
-proto delete-stopwords($textSpec, $langSpec) is export {*}
+#| C<$textSpec> can be a string or a list of strings.
+proto delete-stopwords(|) is export {*}
 
-multi delete-stopwords(@texts, Str $lang --> Positional) {
-    return @texts.map({ delete-stopwords($_, $lang) });
+multi delete-stopwords(@texts --> Positional) {
+    return delete-stopwords('English', @texts);
 }
 
-multi delete-stopwords(Str $text, Str $lang = 'English' --> Str) {
+multi delete-stopwords(Str $lang, @texts --> Positional) {
+    return @texts.map({ delete-stopwords($lang, $_) });
+}
+
+multi delete-stopwords(Str $lang, Str $text --> Str) {
     my %sws = stopwords-iso($lang);
-    my $text2 = $text.subst(:g, / <?after \s+> (\w+) <?before \s+> <?{ $0.Str.lc (elem) %sws }> /, '')
-            .subst(/ ^^  (\w+)  <?before \s+> <?{ $0.Str.lc (elem) %sws }> /, '')
-            .subst(/ <?after \s+> (\w+) $$ <?{ $0.Str.lc (elem) %sws }> /, '');
+    my $text2 = $text.subst(:g, / <?after [\s+ | <punct> && <:!Pd>]> (\w+) <?before [\s+ | <punct> && <:!Pd>]> <?{ $0.Str.lc (elem) %sws }> /, '')
+            .subst(/ ^^  (\w+)  <?before [\s+ | <punct> && <:!Pd>]> <?{ $0.Str.lc (elem) %sws }> /, '')
+            .subst(/ <?after [\s+ | <punct> && <:!Pd>]> (\w+) $$ <?{ $0.Str.lc (elem) %sws }> /, '');
     return $text2;
 }
 
+multi delete-stopwords(Str $text --> Str) {
+    return delete-stopwords('English', $text);
+}
 
 #----------------------------------------------------------
 
