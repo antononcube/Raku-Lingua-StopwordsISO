@@ -6,7 +6,7 @@ use lib './lib';
 
 use Lingua::StopwordsISO;
 
-plan 2;
+plan 7;
 
 #----------------------------------------------------------
 # 1
@@ -48,8 +48,34 @@ ENEND
 
 $res2 = $res2.subst(/ \s+ /, ' '):g;
 
-is delete-stopwords($text2,).subst(/ \s+ /, ' '):g,
+is delete-stopwords('en', $text2).subst(/ \s+ /, ' '):g,
         $res2,
         'English text';
+
+#----------------------------------------------------------
+# 3
+is delete-stopwords('after').trim, '',
+        'Whole text stop word';
+
+#----------------------------------------------------------
+# 4
+is delete-stopwords('.after').trim, '.',
+        '. <stop-word>';
+
+#----------------------------------------------------------
+# 5
+is delete-stopwords('after.').trim, '.',
+        '<stop-word> .';
+
+
+#----------------------------------------------------------
+# 6
+is delete-stopwords('? after').trim, '?',
+        '? \s+ <stop-word>';
+
+#----------------------------------------------------------
+# 7
+is delete-stopwords(' after this ').trim, '',
+        '\s+ <stop-word> \s+ <stop-word> \s+';
 
 done-testing;
